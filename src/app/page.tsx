@@ -32,10 +32,8 @@ export default function Home() {
   useEffect(()=> {
     fetch('/api/total')
       .then(res => res.json())
-      .then(data => 
-         {
-          console.log("ssss222dd", data.message) 
-        
+      .then(data =>  {
+          console.log("ssss222dd", data) 
         });
 
   }, []);
@@ -46,7 +44,7 @@ export default function Home() {
     
     <Flex gap="middle" vertical>
       <div>
-        dddd
+        
       </div>
     </Flex>
   );
