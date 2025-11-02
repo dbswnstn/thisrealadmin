@@ -19,24 +19,20 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   const router = useRouter();
   const pathname = usePathname(); 
 
-  console.log("pathnamepathname", pathname)
-
   const items = [
     { key: '/', icon: <PieChartOutlined />, label: '현황' },
-    { key: '/match', icon: <DesktopOutlined />, label: '매칭 관리' },
-       /*                                                                                                                                                                                                                                                                       ede
+    { key: '/match', icon: <DesktopOutlined />, label: '매칭 관리' },   
     {
-      key: 'sub1',
+      key: '/user',
       icon: <UserOutlined />,
-      label: 'User',
-
+      label: '유저 관리',
       children: [
-        { key: '3', label: 'Tom' },
-        { key: '4', label: 'Bill' },
-        { key: '5', label: 'Alex' },
+        { key: '/user/imageLabeling', label: '프로필 이미지 라벨링' },
+        { key: '/user/identificationCheck', label: '인증 심사' },
       ],
-    },
+    }
  
+ /*
     {
       key: 'sub2',
       icon: <TeamOutlined />,
@@ -71,7 +67,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         <Menu theme="dark"
           mode="inline"
           defaultSelectedKeys={[pathname]}
-          defaultOpenKeys={['sub1', 'sub2']}
+          defaultOpenKeys={['/user']}
           items={items} 
           onClick={handleMenuClick}
           />
