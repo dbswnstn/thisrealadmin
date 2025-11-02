@@ -10,16 +10,21 @@ import {
   TeamOutlined,
   FileOutlined,
 } from '@ant-design/icons';
-
-
+import { useRouter, usePathname } from 'next/navigation'; 
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
 
   // const [collapsed, setCollapsed] = useState(false);
 
+  const router = useRouter();
+  const pathname = usePathname(); 
+
+  console.log("pathnamepathname", pathname)
+
   const items = [
-    { key: '1', icon: <PieChartOutlined />, label: 'Option 1' },
-    { key: '2', icon: <DesktopOutlined />, label: 'Option 2' },
+    { key: '/', icon: <PieChartOutlined />, label: '현황' },
+    { key: '/match', icon: <DesktopOutlined />, label: '매칭 관리' },
+       /*                                                                                                                                                                                                                                                                       ede
     {
       key: 'sub1',
       icon: <UserOutlined />,
@@ -31,6 +36,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         { key: '5', label: 'Alex' },
       ],
     },
+ 
     {
       key: 'sub2',
       icon: <TeamOutlined />,
@@ -41,7 +47,12 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       ],
     },
     { key: '9', icon: <FileOutlined />, label: 'File' },
+     */
   ];
+
+  const handleMenuClick = (e: { key: string }) => {
+    router.push(e.key); // 클릭한 메뉴 key를 URL로 사용
+  };
 
 
   return (
@@ -59,12 +70,16 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         <div className="demo-logo-vertical" />
         <Menu theme="dark"
           mode="inline"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={[pathname]}
           defaultOpenKeys={['sub1', 'sub2']}
-          items={items} />
+          items={items} 
+          onClick={handleMenuClick}
+          />
       </Sider>
       <Layout>
+        {/*
         <Header style={{ padding: 0, backgroundColor: '#fff' }} />
+         */}
         <Content style={{ margin: '0 16px' }}>
           {/* <Breadcrumb items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]} separator=">" />  */}
           {children}

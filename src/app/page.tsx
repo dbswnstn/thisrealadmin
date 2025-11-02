@@ -30,9 +30,9 @@ interface DataType {
 }
 
 const columns: TableColumnsType<DataType> = [
-  { title: 'Name', dataIndex: 'name' },
-  { title: 'Age', dataIndex: 'age' },
-  { title: 'Address', dataIndex: 'address' },
+  { title: 'Name', dataIndex: 'name' , width: '20%'},
+  { title: 'Age', dataIndex: 'age', width: '20%'},
+  { title: 'Address', dataIndex: 'address',width:'10%' },
 ];
 
 const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>((_, i) => ({
@@ -75,6 +75,7 @@ export default function Home() {
   const rowSelection: TableRowSelection<DataType> = {
     selectedRowKeys,
     onChange: onSelectChange,
+    columnWidth: 30, 
   };
 
   const [pagination, setPagination] = useState({
@@ -92,29 +93,31 @@ export default function Home() {
   return (
     
     <Flex gap="middle" vertical>
+      {/* 
       <Flex align="center" gap="middle">
         <Button type="primary" onClick={start} disabled={!hasSelected} loading={loading}>
           Reload
         </Button>
         {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
       </Flex>
+      */}
       <Table<DataType>
-         rowClassName={() => 'custom-row'}
-        scroll={{ y: 500 }}
-       rowSelection={rowSelection} 
-       columns={columns}
-        dataSource={dataSource} 
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          showSizeChanger: true, // 페이지당 개수 변경 기능
-          showQuickJumper: true, // 페이지 번호 직접 입력
-          pageSizeOptions: ['100', '500', '1000'],
-          defaultPageSize: 100
-        }}
-        onChange={handleTableChange}
-        
+          rowClassName={() => 'custom-row'}
+          virtual
+          scroll={{ y: 500, x: 1500}}
+          rowSelection={rowSelection} 
+          columns={columns}
+          dataSource={dataSource} 
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            showSizeChanger: true, // 페이지당 개수 변경 기능
+            showQuickJumper: true, // 페이지 번호 직접 입력
+            pageSizeOptions: ['100', '500', '1000'],
+            defaultPageSize: 100
+          }}
+          onChange={handleTableChange}
         />
     </Flex>
   );
