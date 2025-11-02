@@ -77,35 +77,56 @@ export default function Match() {
   const hasSelected = selectedRowKeys.length > 0;
 
   return (
-    
-    <Flex gap="middle" vertical>
-      {/* 
-      <Flex align="center" gap="middle">
-        <Button type="primary" onClick={start} disabled={!hasSelected} loading={loading}>
-          Reload
-        </Button>
-        {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
-      </Flex>
-      */}
+    <Flex gap='middle' vertical>
+      <Flex gap="middle">
+        {/* 
+        <Flex align="center" gap="middle">
+          <Button type="primary" onClick={start} disabled={!hasSelected} loading={loading}>
+            Reload
+          </Button>
+          {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
+        </Flex>
+        */}
+        <Table<DataType>
+            rowClassName={() => 'custom-row'}
+          // virtual
+          // scroll={{ y: 500, x: 1500}}
+            scroll={{ y: 500 }}
+            rowSelection={rowSelection} 
+            columns={columns}
+            dataSource={dataSource} 
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              showSizeChanger: true, // 페이지당 개수 변경 기능
+              showQuickJumper: true, // 페이지 번호 직접 입력
+              pageSizeOptions: ['100', '500', '1000'],
+              defaultPageSize: 100
+            }}
+            onChange={handleTableChange}
+          />
       <Table<DataType>
-          rowClassName={() => 'custom-row'}
-         // virtual
-         // scroll={{ y: 500, x: 1500}}
-          scroll={{ y: 500 }}
-          rowSelection={rowSelection} 
-          columns={columns}
-          dataSource={dataSource} 
-          pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            showSizeChanger: true, // 페이지당 개수 변경 기능
-            showQuickJumper: true, // 페이지 번호 직접 입력
-            pageSizeOptions: ['100', '500', '1000'],
-            defaultPageSize: 100
-          }}
-          onChange={handleTableChange}
-        />
+            rowClassName={() => 'custom-row'}
+          // virtual
+          // scroll={{ y: 500, x: 1500}}
+            scroll={{ y: 500 }}
+            rowSelection={rowSelection} 
+            columns={columns}
+            dataSource={dataSource} 
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              showSizeChanger: true, // 페이지당 개수 변경 기능
+              showQuickJumper: true, // 페이지 번호 직접 입력
+              pageSizeOptions: ['100', '500', '1000'],
+              defaultPageSize: 100
+            }}
+            onChange={handleTableChange}
+          />
+      </Flex>
     </Flex>
+
   );
 }
