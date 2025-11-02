@@ -28,7 +28,7 @@ const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>((_, i) => 
   address: `London, Park Lane no. ${i}`,
 }));
 
-export default function Home() {
+export default function Match() {
  
   useEffect(()=> {
     fetch('/api/hello')

@@ -44,7 +44,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       label: '유저 관리',
       children: [
         { key: '/user/imageLabeling', label: '프로필 이미지 라벨링' },
-        { key: '/user/identificationCheck', label: '인증 심사' },
+        { key: '/user/identificationCheck', label: '신원 인증 심사' },
       ],
     }
  
