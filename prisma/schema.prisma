@@ -1,15 +1,211 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model match_user {
+  match_id                            BigInt    @id
+  created_at                          DateTime  @db.DateTime(6)
+  modify_at                           DateTime  @db.DateTime(6)
+  both_approve_at                     DateTime? @db.DateTime(6)
+  man_approve                         String?   @db.VarChar(255)
+  man_review                          String?   @db.VarChar(255)
+  match_approve                       String?   @db.VarChar(255)
+  woman_approve                       String?   @db.VarChar(255)
+  woman_review                        String?   @db.VarChar(255)
+  man_user_id                         BigInt
+  woman_user_id                       BigInt
+  user_match_user_man_user_idTouser   user      @relation("match_user_man_user_idTouser", fields: [man_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FKimxm4vusqn6tv28audpbng517")
+  user_match_user_woman_user_idTouser user      @relation("match_user_woman_user_idTouser", fields: [woman_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FKlhwmirp0256ukemoun7nsf0x0")
+
+  @@index([man_user_id], map: "FKimxm4vusqn6tv28audpbng517")
+  @@index([woman_user_id], map: "FKlhwmirp0256ukemoun7nsf0x0")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model push_log {
+  id                BigInt   @id @default(autoincrement())
+  created_at        DateTime @db.DateTime(6)
+  error             String?  @db.VarChar(255)
+  push_token        String?  @db.VarChar(255)
+  receiver_user_id  BigInt
+  status            String   @db.VarChar(10)
+  ticket_id         String?  @db.VarChar(255)
+  title             String?  @db.VarChar(255)
+  type              String?  @db.VarChar(50)
+  notification_type String?  @db.VarChar(255)
+  send_user_id      BigInt
+  read_status       String?  @db.VarChar(1)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model report_user {
+  id                                    BigInt   @id @default(autoincrement())
+  created_at                            DateTime @db.DateTime(6)
+  additional                            String?  @db.VarChar(255)
+  report_code                           String   @db.VarChar(255)
+  report_user_id                        BigInt
+  target_user_id                        BigInt
+  user_report_user_report_user_idTouser user     @relation("report_user_report_user_idTouser", fields: [report_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FK9lq2w1ws11hjsq3uc7eriwulp")
+  user_report_user_target_user_idTouser user     @relation("report_user_target_user_idTouser", fields: [target_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FKnjnr93628xx9qonv4np875baq")
+
+  @@index([report_user_id], map: "FK9lq2w1ws11hjsq3uc7eriwulp")
+  @@index([target_user_id], map: "FKnjnr93628xx9qonv4np875baq")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model review_item {
+  review_item_id     Int                @id @db.TinyInt
+  created_at         DateTime           @db.DateTime(6)
+  review_description String?            @db.VarChar(255)
+  review_user_item   review_user_item[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model review_user {
+  id                                    BigInt             @id @default(autoincrement())
+  created_at                            DateTime           @db.DateTime(6)
+  additional                            String?            @db.VarChar(255)
+  review_summary                        String             @db.VarChar(255)
+  review_user_id                        BigInt?
+  target_user_id                        BigInt?
+  user_review_user_target_user_idTouser user?              @relation("review_user_target_user_idTouser", fields: [target_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FKlf77rbpcludr6mpvxureu7v47")
+  user_review_user_review_user_idTouser user?              @relation("review_user_review_user_idTouser", fields: [review_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FKtr7l5ffb7044tojhc1vauy6tl")
+  review_user_item                      review_user_item[]
+
+  @@index([target_user_id], map: "FKlf77rbpcludr6mpvxureu7v47")
+  @@index([review_user_id], map: "FKtr7l5ffb7044tojhc1vauy6tl")
+}
+
+model review_user_item {
+  reviewer_user_id BigInt
+  review_item_id   Int         @db.TinyInt
+  review_user      review_user @relation(fields: [reviewer_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKe65ysxds9r8fga3xkt8vpl7m5")
+  review_item      review_item @relation(fields: [review_item_id], references: [review_item_id], onDelete: NoAction, onUpdate: NoAction, map: "FKnqicy7nfaovgn6ofkra1i2ndy")
+
+  @@id([reviewer_user_id, review_item_id])
+  @@index([review_item_id], map: "FKnqicy7nfaovgn6ofkra1i2ndy")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ruby_history {
+  id          BigInt   @id @default(autoincrement())
+  created_at  DateTime @db.DateTime(6)
+  match_id    BigInt?
+  ruby_change String?  @db.VarChar(255)
+  ruby_count  BigInt?
+  user_id     BigInt?
+  user        user?    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FKe24residc3hiycxyfvr8neo60")
+
+  @@index([user_id], map: "FKe24residc3hiycxyfvr8neo60")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sms_code {
+  id                   BigInt   @id @default(autoincrement())
+  created_at           DateTime @db.DateTime(6)
+  session_client_tx_id String   @db.VarChar(255)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user {
+  user_id                                      BigInt                @id
+  created_at                                   DateTime              @db.DateTime(6)
+  modify_at                                    DateTime              @db.DateTime(6)
+  address                                      String                @db.VarChar(3)
+  age_open                                     String                @db.VarChar(1)
+  body_type                                    String                @db.VarChar(255)
+  carrier                                      String                @db.VarChar(255)
+  expo_token                                   String?               @db.VarChar(255)
+  family_check_detail                          String?               @db.VarChar(255)
+  family_check_level                           String                @db.VarChar(255)
+  final_school                                 String                @db.VarChar(255)
+  gender                                       String?               @db.VarChar(255)
+  height                                       String                @db.VarChar(255)
+  identification_audit                         String                @db.VarChar(255)
+  identification_audit_reject_reason           String?               @db.VarChar(255)
+  income                                       String                @db.VarChar(2)
+  income_check_detail                          String?               @db.VarChar(255)
+  income_check_level                           String                @db.VarChar(255)
+  income_open                                  String                @db.VarChar(1)
+  introduce                                    String                @db.VarChar(300)
+  job_check_detail                             String?               @db.VarChar(255)
+  job_check_level                              String                @db.VarChar(255)
+  mbti                                         String                @db.VarChar(2)
+  nick_name                                    String                @unique(map: "UKd2ia11oqhsynodbsi46m80vfc") @db.VarChar(255)
+  os                                           String?               @db.VarChar(255)
+  phone_number                                 String                @db.VarChar(11)
+  political_view                               String                @db.VarChar(2)
+  profile_image_open                           String                @db.VarChar(1)
+  profile_image_update_at                      DateTime              @db.DateTime(6)
+  property_check_detail                        String?               @db.VarChar(255)
+  property_check_level                         String                @db.VarChar(255)
+  required_ruby                                BigInt
+  ruby                                         BigInt?               @default(0)
+  seek_person                                  String?               @db.VarChar(255)
+  sns_id                                       String                @db.VarChar(255)
+  sns_type                                     String                @db.VarChar(255)
+  user_name                                    String                @db.VarChar(255)
+  user_no_front                                String                @db.VarChar(6)
+  user_status                                  String                @db.VarChar(255)
+  workplace                                    String                @db.VarChar(255)
+  nation                                       String?               @db.VarChar(255)
+  match_open                                   String                @db.VarChar(255)
+  notification_open                            String                @db.VarChar(255)
+  user_no_back                                 String                @db.VarChar(1)
+  seek_person_appearance                       String?               @db.VarChar(255)
+  seek_person_income                           String?               @db.VarChar(255)
+  seek_person_job                              String?               @db.VarChar(255)
+  seek_person_mbti                             String                @db.VarChar(255)
+  seek_person_property                         String?               @db.VarChar(255)
+  seek_person_appearance_weight                BigInt
+  seek_person_income_weight                    BigInt
+  seek_person_job_weight                       BigInt
+  seek_person_mbti_weight                      BigInt
+  seek_person_property_weight                  BigInt
+  fcm_token                                    String?               @db.VarChar(255)
+  privacy_policy_agreed                        Boolean               @db.Bit(1)
+  terms_of_use_agreed                          Boolean               @db.Bit(1)
+  third_party_provision_agreed                 Boolean               @db.Bit(1)
+  match_user_match_user_man_user_idTouser      match_user[]          @relation("match_user_man_user_idTouser")
+  match_user_match_user_woman_user_idTouser    match_user[]          @relation("match_user_woman_user_idTouser")
+  report_user_report_user_report_user_idTouser report_user[]         @relation("report_user_report_user_idTouser")
+  report_user_report_user_target_user_idTouser report_user[]         @relation("report_user_target_user_idTouser")
+  review_user_review_user_target_user_idTouser review_user[]         @relation("review_user_target_user_idTouser")
+  review_user_review_user_review_user_idTouser review_user[]         @relation("review_user_review_user_idTouser")
+  ruby_history                                 ruby_history[]
+  user_images                                  user_images[]
+  user_profile_images                          user_profile_images[]
+}
+
+model user_images {
+  id             BigInt   @id @default(autoincrement())
+  created_at     DateTime @db.DateTime(6)
+  modify_at      DateTime @db.DateTime(6)
+  image_category String   @db.VarChar(255)
+  s3_key         String   @db.VarChar(255)
+  user_id        BigInt?
+  user           user?    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FK2jg7uf46pq5ihgoj39y7phhy6")
+
+  @@index([user_id], map: "FK2jg7uf46pq5ihgoj39y7phhy6")
+}
+
+model user_profile_images {
+  id          BigInt   @id @default(autoincrement())
+  created_at  DateTime @db.DateTime(6)
+  modify_at   DateTime @db.DateTime(6)
+  image_order Int
+  image_type  String   @db.VarChar(255)
+  s3_key      String   @db.VarChar(255)
+  user_id     BigInt?
+  user        user?    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FK85uabcsm0db190h0uxqgyfo9t")
+
+  @@index([user_id], map: "FK85uabcsm0db190h0uxqgyfo9t")
 }

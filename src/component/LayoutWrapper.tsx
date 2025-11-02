@@ -12,6 +12,22 @@ import {
 } from '@ant-design/icons';
 import { useRouter, usePathname } from 'next/navigation'; 
 
+import { unstableSetRender } from 'antd'
+import { createRoot } from 'react-dom/client'
+
+// ✅ React 19 호환용 antd 설정 (최상단에서 한 번만 실행)
+unstableSetRender((node, container) => {
+  //@ts-ignore
+  container._reactRoot ||= createRoot(container)
+  //@ts-ignore
+  const root = container._reactRoot
+  root.render(node)
+  return async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    root.unmount()
+  }
+})
+
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
 
   // const [collapsed, setCollapsed] = useState(false);
@@ -76,7 +92,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         {/*
         <Header style={{ padding: 0, backgroundColor: '#fff' }} />
          */}
-        <Content style={{ margin: '0 16px' }}>
+        <Content style={{ margin: '16px 16px' }}>
           {/* <Breadcrumb items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]} separator=">" />  */}
           {children}
         </Content>
