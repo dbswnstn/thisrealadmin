@@ -9,13 +9,11 @@ export default function Home() {
   const [userCount, setUserCount] = useState();
 
   useEffect(()=> {
-    fetch('/api/total')
+    fetch('/api/userTotalCount')
       .then(res => res.json())
       .then(data =>  {
          setUserCount(data)
-         // console.log("ssss222dd", data) 
         });
-
   }, []);
   
   return (

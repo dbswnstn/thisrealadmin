@@ -37,7 +37,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   const items = [
     { key: '/', icon: <PieChartOutlined />, label: '현황' },
-    { key: '/match', icon: <DesktopOutlined />, label: '매칭 관리' },   
+    { 
+      key: '/match',
+      icon: <DesktopOutlined />, 
+      label: '매칭 관리'
+    },   
     {
       key: '/user',
       icon: <UserOutlined />,

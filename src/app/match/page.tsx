@@ -1,10 +1,10 @@
 
 'use client'
-import React, { useState , useEffect} from 'react';
+import React, { useState , useEffect, useRef} from 'react';
 
-import { Button, Flex, Table } from 'antd';
+import { Button, Flex, Table, Modal } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
-
+import UserSearch from '@/component/UserSearch';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
@@ -28,104 +28,71 @@ const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>((_, i) => 
   address: `London, Park Lane no. ${i}`,
 }));
 
+interface UserSearchHandle {
+  getSelectedKeys: () => React.Key[];
+}
+
 export default function Match() {
- 
-  useEffect(()=> {
-    fetch('/api/hello')
-      .then(res => res.json())
-      .then(data => 
-         {
-          console.log("ssss", data.message) 
-        
-        });
 
-  }, []);
-  
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [loading, setLoading] = useState(false);
+ 
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false); 
+  const userSearchRef = useRef<UserSearchHandle[]>([]);
 
-  const start = () => {
-    setLoading(true);
-    // ajax request after empty completing
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoading(false);
-    }, 1000);
+  const registerRef = (index: number, ref: UserSearchHandle | null) => {
+    if (ref) {
+      userSearchRef.current[index] = ref;
+    }
   };
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
+  const showModal = () => {
+    setOpen(true);
+    userSearchRef.current.forEach(element => {
+      console.log("people element", element.getSelectedKeys());
+    });
   };
 
-  const rowSelection: TableRowSelection<DataType> = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    columnWidth: 60, 
+  const handleOk = () => {
+    alert("OK");
+    setConfirmLoading(false);
+    setOpen(false);
   };
 
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 100,
-    total: 0,
-  });
-
-  const handleTableChange: TableProps<DataType>['onChange'] = (paginationInfo) => {
-    console.log("ssdsfds", paginationInfo);
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpen(false);
   };
 
-  const hasSelected = selectedRowKeys.length > 0;
+  useEffect(()=> {
+    fetch('/api/matchSearch')
+      .then(res => res.json())
+      .then(data =>  {
+         console.log("333333", data);
+        });
+  }, []);
 
   return (
     <Flex gap='middle' vertical>
-      <Flex gap="middle">
-        {/* 
-        <Flex align="center" gap="middle">
-          <Button type="primary" onClick={start} disabled={!hasSelected} loading={loading}>
-            Reload
-          </Button>
-          {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
-        </Flex>
-        */}
-        <Table<DataType>
-            rowClassName={() => 'custom-row'}
-          // virtual
-          // scroll={{ y: 500, x: 1500}}
-            scroll={{ y: 500 }}
-            rowSelection={rowSelection} 
-            columns={columns}
-            dataSource={dataSource} 
-            pagination={{
-              current: pagination.current,
-              pageSize: pagination.pageSize,
-              total: pagination.total,
-              showSizeChanger: true, // 페이지당 개수 변경 기능
-              showQuickJumper: true, // 페이지 번호 직접 입력
-              pageSizeOptions: ['100', '500', '1000'],
-              defaultPageSize: 100
-            }}
-            onChange={handleTableChange}
-          />
-      <Table<DataType>
-            rowClassName={() => 'custom-row'}
-          // virtual
-          // scroll={{ y: 500, x: 1500}}
-            scroll={{ y: 500 }}
-            rowSelection={rowSelection} 
-            columns={columns}
-            dataSource={dataSource} 
-            pagination={{
-              current: pagination.current,
-              pageSize: pagination.pageSize,
-              total: pagination.total,
-              showSizeChanger: true, // 페이지당 개수 변경 기능
-              showQuickJumper: true, // 페이지 번호 직접 입력
-              pageSizeOptions: ['100', '500', '1000'],
-              defaultPageSize: 100
-            }}
-            onChange={handleTableChange}
-          />
+      <Flex gap="small" vertical>
+        <UserSearch gender='man' ref={ref => registerRef(0, ref)} />
+        <UserSearch gender='woman' ref={ref => registerRef(1, ref)} />
       </Flex>
+      <div style={{width: '100%', justifyContent: 'center', display: 'flex'}}>
+        <Button type='primary' size='large' onClick={showModal}>
+          매칭 하기
+        </Button>
+      </div>
+      <Modal
+        title="매칭 리스트"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}>
+        <div>
+          ddd
+        </div>
+      </Modal>
     </Flex>
 
   );
