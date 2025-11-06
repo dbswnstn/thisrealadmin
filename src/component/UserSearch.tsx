@@ -113,6 +113,17 @@ const UserSearch = forwardRef(function UserSearch(
           defaultPageSize: 100,
         }}
         onChange={handleTableChange}
+        onRow={(record) => ({
+          onClick: () => {
+            // ✅ 클릭 시 선택/해제 토글
+            const selected = selectedRowKeys.includes(record.key);
+            const newSelectedKeys = selected
+              ? selectedRowKeys.filter((k) => k !== record.key)
+              : [...selectedRowKeys, record.key];
+  
+            setSelectedRowKeys(newSelectedKeys);
+          },
+        })}
       />
     </div>
   );
