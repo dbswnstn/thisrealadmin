@@ -16,18 +16,15 @@ interface DataType {
 }
 
 const columns: TableColumnsType<DataType> = [
-  { title: 'Name', dataIndex: 'name' , width: '20%'},
-  { title: 'Age', dataIndex: 'age', width: '20%'},
-  { title: 'Address', dataIndex: 'address' },
+  { title: 'ID', dataIndex: 'userId', width: '10%' },
+  { title: '이름', dataIndex: 'nickName', width: '15%' },
+  { title: '나이', dataIndex: 'age', width: '10%' },
+  { title: '성별', dataIndex: 'gender', width: '10%' },
+  { title: '주소', dataIndex: 'address', width: '20%' },
+  { title: '전화번호', dataIndex: 'phoneNumber', width: '15%' },
+  { title: '가입일', dataIndex: 'createdAt', width: '20%' },
+  { title: '최근 접속', dataIndex: 'lastConnectAt', width: '20%' },
 ];
-
-const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>((_, i) => ({
-  key: i,
-  name: `Edward King ${i}`,
-  age: 32,
-  address: `London, Park Lane no. ${i}`,
-}));
-
 
 type Gender = 'man' | 'woman';
 interface DataType {
@@ -37,10 +34,11 @@ interface DataType {
 
 interface UserSearchProps {
   gender: Gender;
+  dataSource: any[];
 }
 
 const UserSearch = forwardRef(function UserSearch(
-  { gender }: UserSearchProps,
+  { gender, dataSource }: UserSearchProps,
   ref: ForwardedRef<{
     getSelectedKeys: () => React.Key[];
   }>
