@@ -16,9 +16,8 @@ interface DataType {
 }
 
 const columns: TableColumnsType<DataType> = [
-  { title: 'ID', dataIndex: 'userId', width: '10%' },
-  { title: '이름', dataIndex: 'nickName', width: '15%' },
-  { title: '나이', dataIndex: 'age', width: '10%' },
+  { title: '이름', dataIndex: 'user_name', width: '20%' },
+  { title: '나이', dataIndex: 'user_no_front', width: '15%' },
   { title: '성별', dataIndex: 'gender', width: '10%' },
   { title: '주소', dataIndex: 'address', width: '20%' },
   { title: '전화번호', dataIndex: 'phoneNumber', width: '15%' },
@@ -79,6 +78,7 @@ const UserSearch = forwardRef(function UserSearch(
     },
   }));
 
+  console.log("33333", dataSource);
   return (
     <div>
       <div style={{display: 'flex', alignItems: 'center', gap: 24, marginBottom: 10}}>
@@ -95,6 +95,7 @@ const UserSearch = forwardRef(function UserSearch(
       </div>
      
       <Table<DataType>
+        rowKey="user_id"
         rowClassName={() => 'custom-row'}
         scroll={{ y: '50vh' }}
         rowSelection={rowSelection}
@@ -111,12 +112,16 @@ const UserSearch = forwardRef(function UserSearch(
           defaultPageSize: 100,
         }}
         onChange={handleTableChange}
-        onRow={(record) => ({
+        onRow={
+          (record: any) => ({
+          
+          
           onClick: () => {
+            console.log("rrrr", record)
             // ✅ 클릭 시 선택/해제 토글
-            const selected = selectedRowKeys.includes(record.key);
+            const selected = selectedRowKeys.includes(record.user_id);
             const newSelectedKeys = selected
-              ? selectedRowKeys.filter((k) => k !== record.key)
+              ? selectedRowKeys.filter((k) => k !== record.user_id)
               : [...selectedRowKeys, record.key];
   
             setSelectedRowKeys(newSelectedKeys);

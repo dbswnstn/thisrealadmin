@@ -40,6 +40,9 @@ export default function Match() {
   const [confirmLoading, setConfirmLoading] = useState(false); 
   const userSearchRef = useRef<UserSearchHandle[]>([]);
 
+  const [userList, setUserList] = useState<{manUser: [], womanUser:[]}>({manUser: [], womanUser:[]});
+
+
   const registerRef = (index: number, ref: UserSearchHandle | null) => {
     if (ref) {
       userSearchRef.current[index] = ref;
@@ -65,18 +68,20 @@ export default function Match() {
   };
 
   useEffect(()=> {
-    fetch('/api/matchSearch')
+    fetch('/api/userSearch')
       .then(res => res.json())
       .then(data =>  {
-         console.log("333333", data);
+        setUserList(data);
         });
   }, []);
+
+
 
   return (
     <Flex gap='middle' vertical>
       <Flex gap="small" vertical>
-        <UserSearch gender='man' ref={ref => registerRef(0, ref)} />
-        <UserSearch gender='woman' ref={ref => registerRef(1, ref)} />
+        <UserSearch gender='man' ref={ref => registerRef(0, ref)} dataSource={userList.manUser}/>
+        <UserSearch gender='woman' ref={ref => registerRef(1, ref)} dataSource={userList.womanUser} />
       </Flex>
       <div style={{width: '100%', justifyContent: 'center', display: 'flex'}}>
         <Button type='primary' size='large' onClick={showModal}>
