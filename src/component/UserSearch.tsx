@@ -1,28 +1,76 @@
 
 'use client'
-import React, { useState , useEffect, forwardRef, ForwardedRef, useImperativeHandle} from 'react';
-
-import { Button, Flex, Table, Modal } from 'antd';
+import React, { useState, forwardRef, ForwardedRef, useImperativeHandle} from 'react';
+import { Button, Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
-
+import { BODY_TYPE_MAP, CITY_MAP, MBTI_MAP } from '@/utils/common';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
 interface DataType {
-  key: React.Key;
-  name: string;
-  age: number;
+  user_name: string;
+  user_no_front: string;
+  mbti: string;
   address: string;
+  height: string;
+  body_type: string;
+
 }
 
 const columns: TableColumnsType<DataType> = [
-  { title: '이름', dataIndex: 'user_name', width: '20%' },
-  { title: '나이', dataIndex: 'user_no_front', width: '15%' },
-  { title: '성별', dataIndex: 'gender', width: '10%' },
-  { title: '주소', dataIndex: 'address', width: '20%' },
-  { title: '전화번호', dataIndex: 'phoneNumber', width: '15%' },
-  { title: '가입일', dataIndex: 'createdAt', width: '20%' },
-  { title: '최근 접속', dataIndex: 'lastConnectAt', width: '20%' },
+ 
+  { 
+    title: '이름', 
+    dataIndex: 'user_name',
+    width: '5%',
+    align: 'center',
+  },
+  { 
+    title: '나이', 
+    dataIndex: 'user_no_front', 
+    width: '5%',
+    align: 'center',
+    render: (data) => data.substring(0, 2),  
+  },
+  { 
+    title: '인증 내용', 
+    dataIndex: 'user_name',
+    align: 'center',
+    width: '5%' 
+  },
+  { 
+    title: 'MBTI', 
+    dataIndex: 'mbti',
+    width: '5%',
+    align: 'center',
+    render: (code) => MBTI_MAP[code],  
+  },
+  { 
+    title: '키 / 체형', 
+    dataIndex: 'height',
+    width: '10%',
+    align: 'center',
+    render: (_, record) => {
+       return `${record.height} / ${BODY_TYPE_MAP[record.body_type]}`;
+    }
+  },
+  { 
+    title: '주소', 
+    dataIndex: 'address',
+    width: '30%',
+    align: 'center',
+    render: (code) => CITY_MAP[code] || code,  
+  },
+  { title: '가입일', 
+    dataIndex: 'createdAt', 
+    align: 'center',
+    width: '20%' 
+  },
+  { title: '최근 접속',
+    dataIndex: 'lastConnectAt', 
+    align: 'center',
+    width: '20%'
+  },
 ];
 
 type Gender = 'man' | 'woman';
@@ -78,7 +126,6 @@ const UserSearch = forwardRef(function UserSearch(
     },
   }));
 
-  console.log("33333", dataSource);
   return (
     <div>
       <div style={{display: 'flex', alignItems: 'center', gap: 24, marginBottom: 10}}>
@@ -112,17 +159,13 @@ const UserSearch = forwardRef(function UserSearch(
           defaultPageSize: 100,
         }}
         onChange={handleTableChange}
-        onRow={
-          (record: any) => ({
-          
-          
+        onRow={(record: any) => ({
           onClick: () => {
-            console.log("rrrr", record)
             // ✅ 클릭 시 선택/해제 토글
             const selected = selectedRowKeys.includes(record.user_id);
             const newSelectedKeys = selected
               ? selectedRowKeys.filter((k) => k !== record.user_id)
-              : [...selectedRowKeys, record.key];
+              : [...selectedRowKeys, record.user_id];
   
             setSelectedRowKeys(newSelectedKeys);
           },

@@ -6,27 +6,12 @@ import { Button, Flex, Table, Modal } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import UserSearch from '@/component/UserSearch';
 
-type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
-
 interface DataType {
   key: React.Key;
   name: string;
   age: number;
   address: string;
 }
-
-const columns: TableColumnsType<DataType> = [
-  { title: 'Name', dataIndex: 'name' , width: '20%'},
-  { title: 'Age', dataIndex: 'age', width: '20%'},
-  { title: 'Address', dataIndex: 'address' },
-];
-
-const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>((_, i) => ({
-  key: i,
-  name: `Edward King ${i}`,
-  age: 32,
-  address: `London, Park Lane no. ${i}`,
-}));
 
 interface UserSearchHandle {
   getSelectedKeys: () => React.Key[];
